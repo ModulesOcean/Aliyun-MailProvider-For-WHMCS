@@ -1,4 +1,7 @@
 # Aliyun-MailProvider-For-WHMCS
+![GitHub all releases](https://img.shields.io/github/downloads/ModulesOcean/Aliyun-MailProvider-For-WHMCS/total?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/ModulesOcean/Aliyun-MailProvider-For-WHMCS?style=for-the-badge)
+
 该模块可以 WHMCS 使用 阿里云邮件推送 通过邮件服务器向客户端发送电子邮件
 
 ## 要求
