@@ -137,7 +137,7 @@ class AliyunMail implements SenderModuleInterface {
 		
 		$args['addressType'] = $params['addressType'];
 		$args['accountName'] = $message->getFromEmail();
-		$args['fromAlias'] = $message->getFromName();
+		$args['fromAlias'] = $GLOBALS['CONFIG']['CompanyName'];
 
 		// Retrieve recipients.
 		foreach ($message->getRecipients('to') as $to) {			
