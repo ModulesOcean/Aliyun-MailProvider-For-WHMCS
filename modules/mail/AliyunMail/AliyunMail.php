@@ -37,6 +37,12 @@ class AliyunMail implements SenderModuleInterface {
 	 */
 	public function settings() {
 		return [
+			'endpoint' => [
+				'FriendlyName' => 'API 接入点',
+				'Type' => 'text',
+				'Default' => 'dm.aliyuncs.com',
+				'Description' => '阿里云邮件推送 API 接入点',
+			],
 			'accessKeyId' => [
 				'FriendlyName' => 'AccessKey ID',
 				'Type' => 'text',
@@ -51,8 +57,8 @@ class AliyunMail implements SenderModuleInterface {
 				'FriendlyName' => '发信地址类型',
 				'Type' => 'dropdown',
 				'Options' => [
-					'0' => '随机地址',
-					'1' => '系统地址',
+					'random' => '随机地址',
+					'system' => '系统地址',
 				],
 			],
 		];
@@ -64,7 +70,7 @@ class AliyunMail implements SenderModuleInterface {
 	 * @param string $accessKeySecret
 	 * @return Dm Client
 	 */
-	public static function createClient($accessKeyId, $accessKeySecret) {
+	public static function createClient($endpoint, $accessKeyId, $accessKeySecret) {
 		$config = new Config([
 			// 您的AccessKey ID
 			"accessKeyId" => $accessKeyId,
@@ -72,7 +78,7 @@ class AliyunMail implements SenderModuleInterface {
 			"accessKeySecret" => $accessKeySecret
 		]);
 		// 访问的域名
-		$config->endpoint = "dm.aliyuncs.com";
+		$config->endpoint = $endpoint;
 		return new Dm($config);
 	}	
 
@@ -80,8 +86,8 @@ class AliyunMail implements SenderModuleInterface {
 	 * @param string[] $args
 	 * @return void
 	 */
-	public static function sendMail($args = [], $accessKeyId, $accessKeySecret) {
-		$client = self::createClient($accessKeyId, $accessKeySecret);
+	public static function sendMail($args = [], $endpoint, $accessKeyId, $accessKeySecret) {
+		$client = self::createClient($endpoint, $accessKeyId, $accessKeySecret);
 		$args['replyToAddress'] = "false";
 		$singleSendMailRequest = new SingleSendMailRequest($args);
 		$singleSendMail = $client->singleSendMail($singleSendMailRequest);
@@ -100,14 +106,15 @@ class AliyunMail implements SenderModuleInterface {
 				
 		$accessKeyId = $params['accessKeyId'];
 		$accessKeySecret = $params['accessKeySecret'];
-		$args['addressType'] = $params['addressType'];
+		$endpoint = $params['endpoint'];
+		$args['addressType'] = $params['addressType'] == 'random' ? 0 : 1;
 		$args['accountName'] = $GLOBALS['CONFIG']['Email'];
 		$args['fromAlias'] = $GLOBALS['CONFIG']['CompanyName'];
 		$args['toAddress'] = $adminemail;
-		$args['subject'] = 'Postal Email Server Connection Test.';
-		$args['htmlBody'] = '<p>When you receive this email, it means that you can connect to this postal server.</p>';
+		$args['subject'] = '阿里云邮件推送测试';
+		$args['htmlBody'] = '<p>当您收到这封邮件，代表您可以正常连接到阿里云邮件推送服务器。</p>';
 
-		$message = self::sendMail($args, $accessKeyId, $accessKeySecret);
+		$message = self::sendMail($args, $endpoint, $accessKeyId, $accessKeySecret);
 		
 		return $message;
 	}
@@ -135,7 +142,7 @@ class AliyunMail implements SenderModuleInterface {
 		$accessKeyId = $params['accessKeyId'];
 		$accessKeySecret = $params['accessKeySecret'];
 		
-		$args['addressType'] = $params['addressType'];
+		$args['addressType'] = $params['addressType'] == 'random' ? 0 : 1;
 		$args['accountName'] = $message->getFromEmail();
 		$args['fromAlias'] = $GLOBALS['CONFIG']['CompanyName'];
 
