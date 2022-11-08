@@ -141,6 +141,7 @@ class AliyunMail implements SenderModuleInterface {
 				
 		$accessKeyId = $params['accessKeyId'];
 		$accessKeySecret = $params['accessKeySecret'];
+		$endpoint = $params['endpoint'];
 		
 		$args['addressType'] = $params['addressType'] == 'random' ? 0 : 1;
 		$args['accountName'] = $message->getFromEmail();
@@ -155,7 +156,7 @@ class AliyunMail implements SenderModuleInterface {
 		$args['htmlBody'] = $message->getBody();
 		$args['textBody'] = $message->getPlainText();
 
-		$message = self::sendMail($args, $accessKeyId, $accessKeySecret);
+		$message = self::sendMail($args, $endpoint, $accessKeyId, $accessKeySecret);
 
 		// // Set attachments
 		// foreach ($message->getAttachments() as $attachment) {
